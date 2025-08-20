@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cassius Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h2 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .subscription-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+        }
+
+        .subscription-card:hover {
+            background: #f1f3f4;
+            transform: translateX(5px);
+        }
+
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .client-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .client-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .subscription-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            text-align: center;
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(86, 171, 47, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(240, 147, 251, 0.3);
+        }
+
+        .coach-select {
+            padding: 8px 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            background: white;
+            min-width: 200px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-assigned {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-paid {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .refresh-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .subscription-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Cassius Admin Dashboard</h1>
+            <p>Manage coach assignments and process payments with ease</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="pendingCount">-</div>
+                <div class="stat-label">Pending Assignments</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalCoaches">-</div>
+                <div class="stat-label">Available Coaches</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="totalRevenue">$0</div>
+                <div class="stat-label">Total Revenue</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="systemHealth">-</div>
+                <div class="stat-label">System Health</div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Pending Subscriptions Section -->
+            <div class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2>📋 Pending Coach Assignments</h2>
+                    <button class="refresh-btn" onclick="loadPendingSubscriptions()">🔄 Refresh</button>
+                </div>
+                
+                <div id="pendingSubscriptions">
+                    <div class="loading">Loading pending subscriptions...</div>
+                </div>
+            </div>
+
+            <!-- System Status Section -->
+            <div class="section">
+                <h2>📊 System Status</h2>
+                <div id="systemStatus">
+                    <div class="loading">Loading system status...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-functions-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "cassius-ea6af.firebaseapp.com",
+            projectId: "cassius-ea6af",
+            storageBucket: "cassius-ea6af.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef123456"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const functions = firebase.functions();
+        const db = firebase.firestore();
+
+        // Initialize functions
+        const getPendingSubscriptions = functions.httpsCallable('getPendingSubscriptions');
+        const getAvailableCoaches = functions.httpsCallable('getAvailableCoaches');
+        const assignCoach = functions.httpsCallable('assignCoach');
+        const processCoachPayment = functions.httpsCallable('processCoachPayment');
+
+        // Global variables
+        let availableCoaches = [];
+        let pendingSubscriptions = [];
+
+        // Load data on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPendingSubscriptions();
+            loadAvailableCoaches();
+            loadSystemStatus();
+        });
+
+        // Load pending subscriptions
+        async function loadPendingSubscriptions() {
+            try {
+                const result = await getPendingSubscriptions();
+                pendingSubscriptions = result.data.pendingSubscriptions;
+                
+                updatePendingSubscriptionsUI();
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error loading pending subscriptions:', error);
+                showAlert('Error loading pending subscriptions', 'error');
+            }
+        }
+
+        // Load available coaches
+        async function loadAvailableCoaches() {
+            try {
+                const result = await getAvailableCoaches();
+                availableCoaches = result.data.coaches;
+                
+                updateStats();
+                
+            } catch (error) {
+                console.error('Error loading available coaches:', error);
+                showAlert('Error loading available coaches', 'error');
+            }
+        }
+
+        // Load system status
+        async function loadSystemStatus() {
+            try {
+                const response = await fetch('https://us-central1-cassius-ea6af.cloudfunctions.net/getPaymentMetrics');
+                const data = await response.json();
+                
+                if (data.success) {
+                    updateSystemStatus(data.metrics);
+                }
+                
+            } catch (error) {
+                console.error('Error loading system status:', error);
+            }
+        }
+
+        // Update pending subscriptions UI
+        function updatePendingSubscriptionsUI() {
+            const container = document.getElementById('pendingSubscriptions');
+            
+            if (pendingSubscriptions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #666;">
+                        <h3>🎉 No Pending Assignments!</h3>
+                        <p>All clients have coaches assigned.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pendingSubscriptions.map(subscription => `
+                <div class="subscription-card">
+                    <div class="subscription-header">
+                        <div class="client-info">
+                            <h3>${subscription.userName}</h3>
+                            <p>${subscription.userEmail}</p>
+                        </div>
+                        <span class="status-badge status-pending">Pending Assignment</span>
+                    </div>
+                    
+                    <div class="subscription-details">
+                        <div class="detail-item">
+                            <div class="detail-label">Amount</div>
+                            <div class="detail-value">$${subscription.amount}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Days Waiting</div>
+                            <div class="detail-value">${subscription.daysWaiting}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Subscription ID</div>
+                            <div class="detail-value">${subscription.subscriptionId.substring(0, 8)}...</div>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <select class="coach-select" id="coach-${subscription.id}">
+                            <option value="">Select a coach...</option>
+                            ${availableCoaches.map(coach => `
+                                <option value="${coach.id}" ${!coach.hasStripeAccount ? 'disabled' : ''}>
+                                    ${coach.name} ${!coach.hasStripeAccount ? '(No Stripe)' : ''}
+                                </option>
+                            `).join('')}
+                        </select>
+                        
+                        <button class="btn btn-primary" onclick="assignCoachToSubscription('${subscription.id}')">
+                            🎯 Assign Coach
+                        </button>
+                        
+                        <button class="btn btn-success" onclick="processPayment('${subscription.id}')" style="display: none;" id="process-btn-${subscription.id}">
+                            💰 Process Payment
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Assign coach to subscription
+        async function assignCoachToSubscription(subscriptionId) {
+            const coachSelect = document.getElementById(`coach-${subscriptionId}`);
+            const coachId = coachSelect.value;
+            
+            if (!coachId) {
+                showAlert('Please select a coach first', 'error');
+                return;
+            }
+            
+            try {
+                const result = await assignCoach({ subscriptionId, coachId });
+                
+                showAlert(`Coach assigned successfully!`, 'success');
+                
+                // Update UI
+                loadPendingSubscriptions();
+                
+                // Show process payment button
+                const processBtn = document.getElementById(`process-btn-${subscriptionId}`);
+                if (processBtn) {
+                    processBtn.style.display = 'inline-block';
+                }
+                
+            } catch (error) {
+                console.error('Error assigning coach:', error);
+                showAlert(`Error assigning coach: ${error.message}`, 'error');
+            }
+        }
+
+        // Process payment for assigned subscription
+        async function processPayment(subscriptionId) {
+            try {
+                const result = await processCoachPayment({ subscriptionId });
+                
+                showAlert(`Payment processed successfully! $${result.data.amount} split with coach.`, 'success');
+                
+                // Update UI
+                loadPendingSubscriptions();
+                loadSystemStatus();
+                
+            } catch (error) {
+                console.error('Error processing payment:', error);
+                showAlert(`Error processing payment: ${error.message}`, 'error');
+            }
+        }
+
+        // Update stats
+        function updateStats() {
+            document.getElementById('pendingCount').textContent = pendingSubscriptions.length;
+            document.getElementById('totalCoaches').textContent = availableCoaches.length;
+        }
+
+        // Update system status
+        function updateSystemStatus(metrics) {
+            const container = document.getElementById('systemStatus');
+            
+            container.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Webhook Success Rate</div>
+                        <div class="stat-number">${metrics.webhookSuccessRate}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Payment Success Rate</div>
+                        <div class="stat-number">${metrics.paymentSuccessRate}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Transfer Success Rate</div>
+                        <div class="stat-number">${metrics.transferSuccessRate}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">System Uptime</div>
+                        <div class="stat-number">${metrics.uptimeMinutes}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; text-align: center;">
+                    <h3 style="color: #333; margin-bottom: 10px;">System Health</h3>
+                    <div style="font-size: 1.5rem; font-weight: 600; color: #667eea;">
+                        ${metrics.systemHealth}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Show alert
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(alertDiv, container.firstChild);
+            
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 5000);
+        }
+
+        // Auto-refresh every 30 seconds
+        setInterval(() => {
+            loadPendingSubscriptions();
+            loadSystemStatus();
+        }, 30000);
+    </script>
+</body>
+</html>
