@@ -83,7 +83,7 @@
 
         .main-content {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
 
@@ -283,7 +283,7 @@
     <div class="container">
         <div class="header">
             <h1>🎯 Cassius Admin Dashboard</h1>
-            <p>Manage coach assignments and monitor payment processing</p>
+            <p>Manage coach assignments and process payments with ease</p>
         </div>
 
         <div class="stats-grid">
@@ -292,12 +292,12 @@
                 <p>Pending Assignments</p>
             </div>
             <div class="stat-card">
-                <h3 id="webhookSuccess">-</h3>
-                <p>Webhook Success Rate</p>
+                <h3 id="availableCoaches">-</h3>
+                <p>Available Coaches</p>
             </div>
             <div class="stat-card">
-                <h3 id="paymentSuccess">-</h3>
-                <p>Payment Success Rate</p>
+                <h3 id="totalRevenue">$0</h3>
+                <p>Total Revenue</p>
             </div>
             <div class="stat-card">
                 <h3 id="systemHealth">-</h3>
@@ -378,6 +378,7 @@
                 
                 if (data.success) {
                     window.availableCoaches = data.coaches;
+                    document.getElementById('availableCoaches').textContent = data.coaches.length;
                 } else {
                     console.error('Failed to load coaches');
                 }
@@ -443,8 +444,6 @@
             const paymentRate = metrics.paymentSuccessRate || '0%';
             const systemHealth = metrics.systemHealth || '🟢 EXCELLENT';
             
-            document.getElementById('webhookSuccess').textContent = webhookRate;
-            document.getElementById('paymentSuccess').textContent = paymentRate;
             document.getElementById('systemHealth').textContent = systemHealth;
             
             container.innerHTML = `
