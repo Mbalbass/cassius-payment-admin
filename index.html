@@ -439,7 +439,7 @@
                         <div class="subscription-info">
                             <h4>${sub.userName} (${sub.userEmail})</h4>
                             <p>Amount: $${sub.amount}/month | Waiting: ${sub.daysWaiting} days</p>
-                            <p>Created: ${new Date(sub.createdAt.toDate()).toLocaleDateString()}</p>
+                            <p>Created: ${formatTimestamp(sub.createdAt)}</p>
                         </div>
                         <div class="subscription-actions">
                             <select class="coach-select" id="coach-${sub.id}">
@@ -486,6 +486,41 @@
                     <p>Total Payments</p>
                 </div>
             `;
+        }
+
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'Unknown';
+            
+            try {
+                // If it's a Firestore timestamp, convert it
+                if (timestamp && typeof timestamp.toDate === 'function') {
+                    return new Date(timestamp.toDate()).toLocaleDateString();
+                }
+                
+                // If it's a regular Date object
+                if (timestamp instanceof Date) {
+                    return timestamp.toLocaleDateString();
+                }
+                
+                // If it's a number (Unix timestamp)
+                if (typeof timestamp === 'number') {
+                    return new Date(timestamp * 1000).toLocaleDateString();
+                }
+                
+                // If it's a string, try to parse it
+                if (typeof timestamp === 'string') {
+                    const parsed = new Date(timestamp);
+                    if (!isNaN(parsed.getTime())) {
+                        return parsed.toLocaleDateString();
+                    }
+                }
+                
+                // Fallback
+                return 'Unknown';
+            } catch (error) {
+                console.warn('Error formatting timestamp:', error);
+                return 'Unknown';
+            }
         }
 
         function getHealthClass(health) {
