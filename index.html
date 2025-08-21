@@ -354,7 +354,7 @@
         const getAvailableCoaches = functions.httpsCallable('getAvailableCoaches');
         const assignCoach = functions.httpsCallable('assignCoach');
         const processCoachPayment = functions.httpsCallable('processCoachPayment');
-        const syncExistingSubscriptions = functions.httpsCallable('syncExistingSubscriptions');
+        const syncExistingSubscriptionsFunction = functions.httpsCallable('syncExistingSubscriptions');
 
         // Load data on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -517,7 +517,7 @@
                 status.textContent = 'Syncing existing Stripe subscriptions...';
                 status.style.color = '#666';
                 
-                const result = await firebase.functions().httpsCallable('syncExistingSubscriptions')();
+                const result = await syncExistingSubscriptionsFunction();
                 const data = result.data;
                 
                 if (data.success) {
