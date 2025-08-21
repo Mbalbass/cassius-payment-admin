@@ -365,8 +365,14 @@
 
         async function loadPendingSubscriptions() {
             try {
+                console.log('🔄 Loading pending subscriptions...');
+                console.log('📞 Calling getPendingSubscriptions function...');
+                
                 const result = await getPendingSubscriptions();
+                console.log('✅ Function call successful:', result);
+                
                 const data = result.data;
+                console.log('📊 Data received:', data);
                 
                 if (data.success) {
                     updatePendingSubscriptionsUI(data.pendingSubscriptions);
@@ -375,15 +381,21 @@
                     showError('Failed to load pending subscriptions');
                 }
             } catch (error) {
-                console.error('Error loading pending subscriptions:', error);
+                console.error('❌ Error loading pending subscriptions:', error);
                 showError('Error loading pending subscriptions: ' + error.message);
             }
         }
 
         async function loadAvailableCoaches() {
             try {
+                console.log('👥 Loading available coaches...');
+                console.log('📞 Calling getAvailableCoaches function...');
+                
                 const result = await getAvailableCoaches();
+                console.log('✅ Function call successful:', result);
+                
                 const data = result.data;
+                console.log('📊 Data received:', data);
                 
                 if (data.success) {
                     window.availableCoaches = data.coaches;
@@ -392,7 +404,7 @@
                     console.error('Failed to load coaches');
                 }
             } catch (error) {
-                console.error('Error loading coaches:', error);
+                console.error('❌ Error loading coaches:', error);
             }
         }
 
