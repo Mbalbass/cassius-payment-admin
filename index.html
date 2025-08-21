@@ -428,6 +428,10 @@
         function updatePendingSubscriptionsUI(subscriptions) {
             const container = document.getElementById('pendingSubscriptions');
             
+            // Debug: Log what we're receiving
+            console.log('🔍 Debug - updatePendingSubscriptionsUI received:', subscriptions);
+            console.log('🔍 Debug - First subscription data:', subscriptions[0]);
+            
             if (subscriptions.length === 0) {
                 container.innerHTML = '<div class="success">🎉 No pending assignments! All subscriptions have coaches assigned.</div>';
                 return;
