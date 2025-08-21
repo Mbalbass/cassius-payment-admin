@@ -398,8 +398,10 @@
 
         async function loadSystemStatus() {
             try {
-                const response = await fetch('https://us-central1-cassius-ea6af.cloudfunctions.net/getPaymentMetrics');
-                const data = await response.json();
+                // Use Firebase callable function instead of HTTP request
+                const getPaymentMetrics = functions.httpsCallable('getPaymentMetrics');
+                const result = await getPaymentMetrics();
+                const data = result.data;
                 
                 if (data.success) {
                     updateSystemStatusUI(data.metrics);
