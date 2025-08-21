@@ -517,7 +517,7 @@
                 status.textContent = 'Syncing existing Stripe subscriptions...';
                 status.style.color = '#666';
                 
-                const result = await syncExistingSubscriptions();
+                const result = await firebase.functions().httpsCallable('syncExistingSubscriptions')();
                 const data = result.data;
                 
                 if (data.success) {
