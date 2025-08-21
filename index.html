@@ -305,6 +305,14 @@
             </div>
         </div>
 
+        <!-- Sync Button Section -->
+        <div class="section" style="text-align: center; margin: 20px 0;">
+            <button id="syncButton" class="btn btn-primary" style="font-size: 1.2rem; padding: 15px 30px;" onclick="syncExistingSubscriptions()">
+                🔄 Sync Existing Stripe Subscriptions
+            </button>
+            <div id="syncStatus" style="margin-top: 10px; font-size: 0.9rem; color: #666;"></div>
+        </div>
+
         <div class="main-content">
             <div class="section">
                 <h2>📋 Pending Coach Assignments</h2>
@@ -346,6 +354,7 @@
         const getAvailableCoaches = functions.httpsCallable('getAvailableCoaches');
         const assignCoach = functions.httpsCallable('assignCoach');
         const processCoachPayment = functions.httpsCallable('processCoachPayment');
+        const syncExistingSubscriptions = functions.httpsCallable('syncExistingSubscriptions');
 
         // Load data on page load
         document.addEventListener('DOMContentLoaded', function() {
@@ -494,6 +503,46 @@
             } catch (error) {
                 console.error('Error assigning coach:', error);
                 showError('Error assigning coach: ' + error.message);
+            }
+        }
+
+        async function syncExistingSubscriptions() {
+            const button = document.getElementById('syncButton');
+            const status = document.getElementById('syncStatus');
+            
+            try {
+                // Disable button and show loading
+                button.disabled = true;
+                button.textContent = '🔄 Syncing...';
+                status.textContent = 'Syncing existing Stripe subscriptions...';
+                status.style.color = '#666';
+                
+                const result = await syncExistingSubscriptions();
+                const data = result.data;
+                
+                if (data.success) {
+                    status.textContent = `✅ Sync completed! Created: ${data.results.created}, Updated: ${data.results.updated}, Errors: ${data.results.errors}`;
+                    status.style.color = '#28A745';
+                    
+                    // Reload data to show new subscriptions
+                    loadPendingSubscriptions();
+                    loadAvailableCoaches();
+                    
+                    showSuccess(`Successfully synced ${data.results.created} new subscriptions!`);
+                } else {
+                    status.textContent = '❌ Sync failed: ' + data.error;
+                    status.style.color = '#DC3545';
+                    showError('Sync failed: ' + data.error);
+                }
+            } catch (error) {
+                console.error('Error syncing subscriptions:', error);
+                status.textContent = '❌ Sync error: ' + error.message;
+                status.style.color = '#DC3545';
+                showError('Error syncing subscriptions: ' + error.message);
+            } finally {
+                // Re-enable button
+                button.disabled = false;
+                button.textContent = '🔄 Sync Existing Stripe Subscriptions';
             }
         }
 
